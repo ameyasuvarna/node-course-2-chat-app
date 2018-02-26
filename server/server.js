@@ -15,14 +15,23 @@ app.use(express.static(publicPath)); //Serve up the Public folder
 io.on('connection', (socket) => {
   console.log('New user connected');
 
-  // socket.emit('newMessage', {
-  //   from: 'Ameya',
-  //   text: 'Hey. What is going on.',
-  //   createdAt: 123
-  // });
+  //Send message to the individual user
+  socket.emit('newMessage', {
+    from: 'Admin',
+    text: 'Welcome to the chat app',
+    createdAt: new Date().getTime()
+  });
+
+  // Broadcasting - will send to all user except the socket itself
+  socket.broadcast.emit('newMessage', {
+    from: 'Admin',
+    text: 'New user joined the chat',
+    createdAt: new Date().getTime()
+  });
 
   socket.on('createMessage', (message) =>{
     console.log('createMessage', message);
+
     //Socket.emit sends data to one connection
     //io.emit sends data to every connection
     io.emit('newMessage', {
